@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en" data-theme="day">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#000000">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>AeroPanel – Aerobatic WebPanel for FlightGear</title>
+  <link rel="stylesheet" href="css/panel.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">AERO<b>PANEL</b></div>
+
+    <div class="status" id="status" title="Connection to FlightGear">
+      <span class="led" id="led"></span>
+      <span id="status-text">Starting…</span>
+      <span class="status-rate" id="status-rate"></span>
+      <span class="status-warn" id="status-warn" hidden></span>
+    </div>
+
+    <div class="topbar-right">
+      <select id="profile" class="chip-select" title="Aircraft profile (G limits, speed markings)"></select>
+      <button class="chip" id="btn-demo" title="Run the built-in demo flight (D)">DEMO</button>
+      <button class="chip" id="btn-units" title="Metric / imperial (U)">METRIC</button>
+      <button class="chip" id="btn-theme" title="Day / night (T)">DAY</button>
+      <button class="chip" id="btn-full" title="Fullscreen (F)">⛶</button>
+      <button class="chip" id="btn-settings" title="Settings (S)">⚙</button>
+    </div>
+  </header>
+
+  <main class="grid" id="grid">
+    <section class="cell cell-asi">
+      <div class="inst" id="inst-asi"></div>
+    </section>
+
+    <section class="cell cell-att">
+      <div class="inst" id="inst-att"></div>
+      <div class="inst-sub inst-sub-slip" id="inst-slip"></div>
+    </section>
+
+    <section class="cell cell-alt">
+      <div class="inst" id="inst-alt"></div>
+      <div class="controls">
+        <button class="btn btn-icon" id="qnh-down" aria-label="QNH down">−</button>
+        <span class="controls-label">QNH</span>
+        <button class="btn btn-icon" id="qnh-up" aria-label="QNH up">+</button>
+        <button class="btn" id="qnh-sim" title="Take the QNH FlightGear is using">SIM</button>
+        <button class="btn" id="qnh-std" title="Standard 1013.25 hPa">STD</button>
+      </div>
+    </section>
+
+    <section class="cell cell-hdg">
+      <div class="inst" id="inst-hdg"></div>
+      <div class="controls">
+        <button class="btn" id="hdg-ref" title="Drop / clear the reference-heading bug (H)">SET REF</button>
+      </div>
+    </section>
+
+    <section class="cell cell-g">
+      <div class="inst" id="inst-g"></div>
+      <div class="controls">
+        <button class="btn btn-primary" id="g-reset" title="Reset peak G (R)">RESET PEAKS</button>
+      </div>
+    </section>
+
+    <section class="cell cell-vario">
+      <div class="inst" id="inst-vario"></div>
+      <div class="inst-sub inst-sub-energy" id="inst-energy"></div>
+      <div class="controls">
+        <button class="btn" id="energy-set" title="Set energy reference now (E)">SET ENERGY REF</button>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="settings" class="settings">
+    <form method="dialog" id="settings-form">
+      <h2>Settings</h2>
+
+      <fieldset>
+        <legend>FlightGear connection</legend>
+        <label>Host / IP <input name="host" type="text" autocomplete="off" spellcheck="false" placeholder="192.168.1.20"></label>
+        <label>HTTP port <input name="port" type="number" min="1" max="65535"></label>
+        <label>Transport
+          <select name="transport">
+            <option value="poll">HTTP polling (recommended)</option>
+            <option value="ws">WebSocket listener (experimental)</option>
+            <option value="demo">Built-in demo flight</option>
+          </select>
+        </label>
+        <label>Update rate (Hz) <input name="hz" type="number" min="5" max="60"></label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Aircraft &amp; limits</legend>
+        <label>G limit + (blank = profile) <input name="gLimitPos" type="number" step="0.5" min="2" max="20"></label>
+        <label>G limit − (blank = profile) <input name="gLimitNeg" type="number" step="0.5" min="-20" max="0"></label>
+        <label class="check"><input name="invertG" type="checkbox"> Invert G sign (if level flight reads −1)</label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Advanced – property overrides</legend>
+        <label>Slip full-scale <input name="slipFull" type="number" step="0.1" min="0.01">
+          <small>property value = full ball deflection (1 for slip-skid-ball; ~10 if you use side-slip-deg)</small></label>
+        <label class="check"><input name="invertSlip" type="checkbox"> Invert ball direction</label>
+        <label>Property map (JSON) <textarea name="propOverrides" rows="4" spellcheck="false" placeholder='{"slip": "/orientation/side-slip-deg", "g": "/accelerations/pilot-gdamped"}'></textarea>
+          <small>keys: ias alt g pitch roll hdg slip vsfps qnh</small></label>
+      </fieldset>
+
+      <div class="settings-actions">
+        <button value="cancel" class="btn">Cancel</button>
+        <button value="ok" class="btn btn-primary" id="settings-save">Save &amp; reconnect</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="js/core/util.js"></script>
+  <script src="js/core/profiles.js"></script>
+  <script src="js/core/settings.js"></script>
+  <script src="js/data/properties.js"></script>
+  <script src="js/data/http-source.js"></script>
+  <script src="js/data/ws-source.js"></script>
+  <script src="js/data/demo-source.js"></script>
+  <script src="js/data/manager.js"></script>
+  <script src="js/instruments/g-meter.js"></script>
+  <script src="js/instruments/attitude.js"></script>
+  <script src="js/instruments/airspeed.js"></script>
+  <script src="js/instruments/altimeter.js"></script>
+  <script src="js/instruments/slip-skid.js"></script>
+  <script src="js/instruments/variometer.js"></script>
+  <script src="js/instruments/energy.js"></script>
+  <script src="js/instruments/compass.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
