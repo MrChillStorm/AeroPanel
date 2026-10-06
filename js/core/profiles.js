@@ -40,6 +40,12 @@
       gNeg: -5,
       asi: { vs: 44, va: 97, vne: 135, stops: stopsDefault },
     },
+    'ask21': {
+      name: 'ASK 21 (approx.)',
+      gPos: 5.3,
+      gNeg: -2.65,
+      asi: { vs: 38, va: 103, vne: 151, stops: [[0, 0], [30, 0.06], [50, 0.2], [110, 0.76], [160, 1.0]] },
+    },
     'swift': {
       name: 'Swift S-1 (placeholder values)',
       gPos: 7,

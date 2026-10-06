@@ -83,7 +83,7 @@ so any one can be replaced independently. Data sources share a tiny interface
 - **WebSocket** (`/PropertyListener`) is experimental and untested against all FlightGear
   versions; HTTP polling is the reliable default.
 - **Profiles** (`js/core/profiles.js`) hold G limits and speed arcs. Values are approximate
-  (the Swift entry is a placeholder) — set them from your AFM/FDM.
+  (the Swift entry is a placeholder; the ASK 21 figures are from memory — the type has much lower G limits than the aerobatic profiles, so verify them) — set them from your AFM/FDM.
 - Energy uses indicated airspeed as a proxy for TAS; it is for comparing figures, not navigation.
 - Heading is held while the nose is within ~10° of vertical, where FDM heading flips by 180°.
 - Developed and verified against a mock server and the demo flight, not a live FlightGear session.
