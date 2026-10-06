@@ -1,5 +1,7 @@
 # AeroPanel – aerobatic WebPanel for FlightGear
 
+![AeroPanel demo](AeroPanel.png)
+
 A browser-based digital instrument panel for aerobatic gliders (MDM-1 Fox, Swift S-1 style),
 meant to run on a second computer or tablet on your LAN. Pure HTML/CSS/JS + SVG, no build step,
 no dependencies.
